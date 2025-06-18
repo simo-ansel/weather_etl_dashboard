@@ -71,7 +71,7 @@ L’intero sistema è containerizzato e gestito tramite Docker Compose, per faci
 
     TIMEZONE=Europe/Rome    # Timezone DAG e API
 
-    SCHEDULE=0 0 * * *      # Orario di esecuzione DAG
+    SCHEDULE=0 0 * * *      # Orario di esecuzione DAG (orario UTC, non del timezone)
     ```
 
 > **Nota:** puoi modificare queste variabili per adattare il progetto al tuo ambiente, posizione geografica, fuso orario e frequenza di esecuzione desiderata.
