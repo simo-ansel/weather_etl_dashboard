@@ -1,8 +1,11 @@
-# Weather ETL Dashboard
+## Weather ETL Dashboard
 
-Progetto ETL per l’estrazione, trasformazione e caricamento di dati meteorologici in un database PostgreSQL, con visualizzazione tramite una dashboard interattiva sviluppata con Streamlit.  
-La pipeline salva anche i dati trasformati in file CSV per ogni tipologia di informazione raccolta.  
+Progetto ETL per l’estrazione, trasformazione e caricamento di dati meteorologici in un database PostgreSQL, con visualizzazione tramite una dashboard interattiva sviluppata con Streamlit.
+
+La pipeline salva anche i dati trasformati in file CSV per ogni tipologia di informazione raccolta.
+
 La raccolta dei dati è automatizzata tramite una DAG schedulata in Apache Airflow. Tutto il sistema è containerizzato con Docker Compose.
+
 ---
 
 ## Contenuti
