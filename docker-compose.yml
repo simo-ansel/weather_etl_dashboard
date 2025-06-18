@@ -1,0 +1,92 @@
+cservices:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # CONTAINER POSTGRESQL
+  # ─────────────────────────────────────────────────────────────────────────────
+  postgres:
+    # Database Postgres usato da Airflow
+    image: postgres:15
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # CONTAINER AIRFLOW PER APPLICAZIONE WEB
+  # ─────────────────────────────────────────────────────────────────────────────
+  airflow-webserver:
+    # Webserver di Airflow per l’interfaccia utente
+    image: apache/airflow:2.9.1
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      # Configurazioni Airflow specifiche
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      # Abilita autenticazione RBAC
+      AIRFLOW__WEBSERVER__RBAC: 'True'
+      AIRFLOW__WEBSERVER__SECRET_KEY: 'your_secret_key_here'
+      _AIRFLOW_WWW_USER_USERNAME: admin
+      _AIRFLOW_WWW_USER_PASSWORD: admin
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./etl:/opt/airflow/etl
+      - ./data:/opt/airflow/data
+      - ./requirements.txt:/requirements.txt
+    # Installa dipendenze, migra DB, crea utente admin, avvia webserver
+    command: >
+      bash -c "
+        pip install --no-cache-dir -r /requirements.txt &&
+        airflow db migrate &&
+        airflow users create --username admin --password admin --role Admin &&
+        airflow webserver
+      "
+    ports:
+      - "8080:8080"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # CONTAINER AIRFLOW PER SCHEDULE
+  # ─────────────────────────────────────────────────────────────────────────────
+  airflow-scheduler:
+    # Scheduler di Airflow che esegue i DAG
+    image: apache/airflow:2.9.1
+    restart: always
+    depends_on:
+      - airflow-webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./etl:/opt/airflow/etl
+      - ./data:/opt/airflow/data
+      - ./requirements.txt:/requirements.txt
+    # Migra DB e avvia scheduler
+    command: >
+      bash -c "
+        airflow db migrate &&
+        airflow scheduler
+      "
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # CONTAINER STREAMLIT
+  # ─────────────────────────────────────────────────────────────────────────────
+  streamlit-dashboard:
+    image: python:3.12-slim
+    working_dir: /dashboard
+    volumes:
+        - ./dashboard:/dashboard
+        - ./requirements.txt:/requirements.txt
+    ports:
+        - "8501:8501"
+    command: bash -c "pip install --no-cache-dir -r /requirements.txt && streamlit run app.py --server.port=8501 --server.address=0.0.0.0"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# VOLUME PERSISTENTE PER IL DB POSTGRESQL
+# ─────────────────────────────────────────────────────────────────────────────
+volumes:
+  postgres_data:
