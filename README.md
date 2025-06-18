@@ -54,7 +54,7 @@ L’intero sistema è containerizzato e gestito tramite Docker Compose, per faci
 
 2. (Opzionale) Modifica `requirements.txt` per aggiungere o aggiornare dipendenze Python.
 
-3. Crea un file `.env` nella root del progetto con le variabili d’ambiente per la connessione al database, la località geografica, il fuso orario e la schedulazione della DAG.  
+3. Crea un file `.env` nella root del progetto con le variabili d’ambiente per la connessione al database, la località geografica, il fuso orario e la schedulazione della DAG.
    Esempio di contenuto:
 
     ```
@@ -77,6 +77,17 @@ L’intero sistema è containerizzato e gestito tramite Docker Compose, per faci
 > **Nota:** puoi modificare queste variabili per adattare il progetto al tuo ambiente, posizione geografica, fuso orario e frequenza di esecuzione desiderata.
 
 4. (Opzionale) Se preferisci, puoi modificare direttamente il file della DAG (`dags/weather_etl.py`) per cambiare `schedule_interval`, ma l’uso della variabile `SCHEDULE` nel `.env` è consigliato per una gestione più flessibile.
+
+5. Preparazione della cartella data
+
+    Prima di avviare i container, crea la cartella data e assegna i permessi corretti:
+
+    ```bash
+    mkdir -p data
+    sudo chown -R 50000:50000 data
+    ```
+
+> **Nota:** L’UID 50000 è quello con cui gira Airflow nel container. Questa operazione serve solo la prima volta per permettere ai container di scrivere correttamente nella cartella.
 
 ---
 
