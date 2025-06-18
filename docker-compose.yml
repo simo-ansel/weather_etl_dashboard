@@ -23,6 +23,8 @@ services:
     restart: always
     depends_on:
       - postgres
+    env_file:
+      - .env
     environment:
       # Configurazioni Airflow specifiche
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -57,6 +59,8 @@ services:
     restart: always
     depends_on:
       - airflow-webserver
+    env_file:
+      - .env
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
@@ -78,6 +82,8 @@ services:
   streamlit-dashboard:
     image: python:3.12-slim
     working_dir: /dashboard
+    env_file:
+      - .env
     volumes:
         - ./dashboard:/dashboard
         - ./requirements.txt:/requirements.txt
