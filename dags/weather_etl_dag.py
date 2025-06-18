@@ -109,13 +109,17 @@ def run_load():
 # AIRFLOW DAG
 # ─────────────────────────────────────────────────────────────────────────────
 
-# conversione orario UTC per fuso di Roma
-local_tz = pendulum.timezone("Europe/Rome")
+# Orario schedule di default
+TIMEZONE = os.getenv("TIMEZONE", "Europe/Rome")
+SCHEDULE = os.getenv("SCHEDULE", "0 0 * * *")  # default ogni giorno a mezzanotte
+
+# Variabile personalizzabile
+local_tz = pendulum.timezone(TIMEZONE)
 
 with DAG(
     'weather_etl',
     start_date=datetime(2025, 5, 29, 0, 0, tzinfo=local_tz),
-    schedule='0 0 * * *',  # 00:00 ora di Roma
+    schedule=SCHEDULE,
     catchup=False
 ) as dag:
 

@@ -1,8 +1,8 @@
 # Weather ETL Dashboard
 
 Progetto ETL per l’estrazione, trasformazione e caricamento di dati meteorologici in un database PostgreSQL, con visualizzazione tramite una dashboard interattiva sviluppata con Streamlit.  
+La pipeline salva anche i dati trasformati in file CSV per ogni tipologia di informazione raccolta.  
 La raccolta dei dati è automatizzata tramite una DAG schedulata in Apache Airflow. Tutto il sistema è containerizzato con Docker Compose.
-
 ---
 
 ## Contenuti
@@ -15,7 +15,7 @@ La raccolta dei dati è automatizzata tramite una DAG schedulata in Apache Airfl
   - [Accesso alla dashboard](#accesso-alla-dashboard)  
   - [Accesso all’interfaccia Airflow](#accesso-allinterfaccia-airflow)  
   - [Verifica dati nel database](#verifica-dati-nel-database)  
-- [Output della pipeline](#output della pipeline)  
+- [Output della pipeline](#output-della-pipeline)  
 - [Credenziali](#credenziali)  
 - [Pulizia dell’ambiente](#pulizia-dellambiente)  
 
@@ -23,9 +23,11 @@ La raccolta dei dati è automatizzata tramite una DAG schedulata in Apache Airfl
 
 ## Descrizione
 
-Questo progetto implementa una pipeline ETL completa per raccogliere dati meteorologici, elaborarli e salvarli in un database PostgreSQL.  
-La raccolta è automatizzata tramite una DAG definita in Apache Airflow, schedulata per l’esecuzione quotidiana a mezzanotte (ora locale).  
-I dati vengono successivamente visualizzati in una dashboard interattiva realizzata con Streamlit.
+Questo progetto implementa una pipeline ETL completa per raccogliere dati meteorologici, elaborarli e salvarli in un database PostgreSQL.
+
+La raccolta è automatizzata tramite una DAG definita in Apache Airflow, schedulata per l’esecuzione quotidiana a mezzanotte (ora locale).
+
+I dati vengono successivamente visualizzati in una dashboard interattiva realizzata con Streamlit, e salvati anche in formato CSV nella cartella data/, per analisi o uso esterno.
 
 L’intero sistema è containerizzato e gestito tramite Docker Compose, per facilitare l’installazione e l’esecuzione.
 
@@ -49,19 +51,29 @@ L’intero sistema è containerizzato e gestito tramite Docker Compose, per faci
 
 2. (Opzionale) Modifica `requirements.txt` per aggiungere o aggiornare dipendenze Python.
 
-3. Crea un file `.env` nella root del progetto con le variabili d’ambiente per la connessione al database. Esempio di contenuto:
+3. Crea un file `.env` nella root del progetto con le variabili d’ambiente per la connessione al database, la località geografica, il fuso orario e la schedulazione della DAG.  
+   Esempio di contenuto:
 
     ```
+    # Credenziali per il DB PostgreSQL
     DB_NAME=airflow
     DB_USER=airflow
     DB_PASS=airflow
     DB_HOST=postgres
     DB_PORT=5432
+
+    # Coordinate geografiche per dati API
+    LAT=41.8919             # latitudine
+    LON=12.5113             # longitudine
+
+    TIMEZONE=Europe/Rome    # Timezone DAG e API
+
+    SCHEDULE=0 0 * * *      # Orario di esecuzione DAG
     ```
 
-> **Nota:** se necessario, puoi modificare queste variabili per adattarle al tuo ambiente.
+> **Nota:** puoi modificare queste variabili per adattare il progetto al tuo ambiente, posizione geografica, fuso orario e frequenza di esecuzione desiderata.
 
-4. (Opzionale) Se vuoi cambiare la schedulazione della DAG Airflow, modifica il file della DAG (ad esempio `dags/weather_etl.py`) impostando un nuovo `schedule_interval`.
+4. (Opzionale) Se preferisci, puoi modificare direttamente il file della DAG (`dags/weather_etl.py`) per cambiare `schedule_interval`, ma l’uso della variabile `SCHEDULE` nel `.env` è consigliato per una gestione più flessibile.
 
 ---
 

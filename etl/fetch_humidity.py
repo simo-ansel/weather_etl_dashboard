@@ -4,16 +4,24 @@
 import os
 import requests
 import pandas as pd
+from dotenv import load_dotenv
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CONFIGURAZIONE API
 # ─────────────────────────────────────────────────────────────────────────────
+load_dotenv()
+
+LAT = os.getenv("LAT", "41.8919")
+LON = os.getenv("LON", "12.5113")
+TIMEZONE = os.getenv("TIMEZONE", "Europe/Rome")
+
 BASE_URL = "https://api.open-meteo.com/v1/forecast"
+
 PARAMS = {
-    "latitude": 41.8919,
-    "longitude": 12.5113,
+    "latitude": LAT,
+    "longitude": LON,
     "hourly": "relative_humidity_2m",
-    "timezone": "Europe/Rome"
+    "timezone": TIMEZONE
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
