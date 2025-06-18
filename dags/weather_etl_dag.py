@@ -8,6 +8,7 @@ import pendulum
 import pandas as pd
 import os
 import sys
+from dotenv import load_dotenv
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PERCORSI PER SCRIPT DELLA ETL
@@ -110,6 +111,8 @@ def run_load():
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Orario schedule di default
+load_dotenv()
+
 TIMEZONE = os.getenv("TIMEZONE", "Europe/Rome")
 SCHEDULE = os.getenv("SCHEDULE", "0 0 * * *")  # default ogni giorno a mezzanotte
 
