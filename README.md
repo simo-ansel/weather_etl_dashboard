@@ -167,17 +167,17 @@ Airflow UI
 
 Database PostgreSQL
 
+Usa le credenziali specificate nel file .env (di default):
+
 - Host: postgres
 
 - Porta: 5432
 
-- Nome database: airflow
+- Nome del Database: airflow
 
 - Username: airflow
 
 - Password: airflow
-
-Le credenziali sono configurate nel file .env e sono utilizzate dai container Docker.
 
 ---
 
