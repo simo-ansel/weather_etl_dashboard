@@ -4,6 +4,7 @@
 import os
 import pandas as pd
 from sqlalchemy import create_engine
+from dotenv import load_dotenv
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CREDENZIALI DEL DATABASE DALLE VARIABILI D'AMBIENTE
